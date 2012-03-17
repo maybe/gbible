@@ -29,7 +29,7 @@
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.rootViewController = [[UIViewController alloc] initWithNibName:@"PKRootViewControllerIPad" bundle:nil];
+    self.rootViewController = [[PKRootViewController alloc] init];
     self.window.rootViewController = self.rootViewController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
