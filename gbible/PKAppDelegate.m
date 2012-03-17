@@ -11,11 +11,26 @@
 @implementation PKAppDelegate
 
 @synthesize window = _window;
+@synthesize database;
+@synthesize mySettings;
+@synthesize rootViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    //open our databases...
+    database = [PKDatabase instance];
+    
+    //and get our settings
+    mySettings = [PKSettings instance];
+    [mySettings reloadSettings];
+    
+    // for play's sake, put out some settings :-)
+    NSLog (@"Our greek text is: %i", mySettings.greekText);
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    self.rootViewController = [[UIViewController alloc] initWithNibName:@"PKRootViewControllerIPad" bundle:nil];
+    self.window.rootViewController = self.rootViewController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
