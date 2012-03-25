@@ -7,6 +7,11 @@
 //
 
 #import "PKAppDelegate.h"
+#import "PKBibleBooksController.h"
+#import "PKBookmarksViewController.h"
+#import "PKNotesViewController.h"
+#import "PKHighlightsViewController.h"
+#import "PKRootViewController.h"
 
 @implementation PKAppDelegate
 
@@ -14,6 +19,8 @@
 @synthesize database;
 @synthesize mySettings;
 @synthesize rootViewController;
+@synthesize segmentController;
+@synthesize segmentedControl;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -23,15 +30,54 @@
     //and get our settings
     mySettings = [PKSettings instance];
     [mySettings reloadSettings];
-    
-    // for play's sake, put out some settings :-)
-    NSLog (@"Our greek text is: %i", mySettings.greekText);
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.rootViewController = [[PKRootViewController alloc] init];
+    // define our "top-level" controller -- this is the one above the navigation panel 
+    PKRootViewController *topController = [[PKRootViewController alloc] init];
+    
+    // define an array that houses all our navigation panels.
+    NSArray *navViewControllers = [[NSArray alloc] initWithObjects:
+                                    [[PKBibleBooksController alloc] init],
+                                    [[PKHighlightsViewController alloc] init],
+                                    [[PKBookmarksViewController alloc] init],
+                                    [[PKNotesViewController alloc] init]
+                                    , nil];
+                                    
+    UINavigationController *segmentedNavBarController = 
+                            [[UINavigationController alloc] init ];
+    [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+    
+    self.segmentController = [[SegmentsController alloc]
+                                             initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
+
+    self.segmentedControl = [[UISegmentedControl alloc]
+                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Bookmarks", @"Notes", nil]];
+    self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    [self.segmentedControl addTarget:self.segmentController 
+                    action:@selector(indexDidChangeForSegmentedControl:) 
+                    forControlEvents:UIControlEventValueChanged];
+    
+    self.segmentedControl.selectedSegmentIndex = 0;
+    self.segmentedControl.apportionsSegmentWidthsByContent = YES;
+    self.segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    CGRect scFrame = segmentedNavBarController.view.bounds;
+    scFrame.origin.y=5;
+    scFrame.size.height=34;
+    self.segmentedControl.frame = scFrame;
+    
+    self.segmentedControl.tintColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
+    
+    [self.segmentController indexDidChangeForSegmentedControl:segmentedControl];
+    
+    // define our ZUII
+    ZUUIRevealController *revealController = [[ZUUIRevealController alloc]
+                                              initWithFrontViewController:topController 
+                                              rearViewController:segmentedNavBarController];
+    
+    self.rootViewController = revealController;
     self.window.rootViewController = self.rootViewController;
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor blackColor];
     [self.window makeKeyAndVisible];
     return YES;
 }
