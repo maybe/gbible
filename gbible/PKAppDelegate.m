@@ -46,7 +46,7 @@
     UINavigationController *segmentedNavBarController = 
                             [[UINavigationController alloc] init ];
     [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
-    
+    segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     self.segmentController = [[SegmentsController alloc]
                                              initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
 
@@ -64,6 +64,7 @@
     CGRect scFrame = segmentedNavBarController.view.bounds;
     scFrame.origin.y=5;
     scFrame.size.height=34;
+    //scFrame.size.width = 260;
     self.segmentedControl.frame = scFrame;
     
     self.segmentedControl.tintColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
@@ -77,7 +78,7 @@
     
     self.rootViewController = revealController;
     self.window.rootViewController = self.rootViewController;
-    self.window.backgroundColor = [UIColor blackColor];
+    self.window.backgroundColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -92,6 +93,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[PKSettings instance ]saveSettings];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -107,6 +109,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [[PKSettings instance ]saveSettings];
 }
 
 @end
