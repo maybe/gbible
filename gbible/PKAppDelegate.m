@@ -47,6 +47,13 @@
                             [[UINavigationController alloc] init ];
     [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
     segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [segmentedNavBarController.navigationBar setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
+        [UIColor whiteColor], UITextAttributeTextColor, nil]];
+
+
+    [[UIBarButtonItem appearance] setTintColor:    [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0]];
+
+
     self.segmentController = [[SegmentsController alloc]
                                              initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
 
