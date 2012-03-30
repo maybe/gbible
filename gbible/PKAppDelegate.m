@@ -22,8 +22,24 @@
 @synthesize segmentController;
 @synthesize segmentedControl;
 
+    static id _instance;
+    
+    +(id) instance
+    {
+        @synchronized (self)
+        {
+            if (!_instance)
+            {
+                _instance = [[self alloc] init];
+            }
+        }
+        return _instance;
+    }
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    _instance = self;
+    
     //open our databases...
     database = [PKDatabase instance];
     
