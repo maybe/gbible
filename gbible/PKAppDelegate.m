@@ -8,7 +8,7 @@
 
 #import "PKAppDelegate.h"
 #import "PKBibleBooksController.h"
-#import "PKBookmarksViewController.h"
+#import "PKHistoryViewController.h"
 #import "PKNotesViewController.h"
 #import "PKHighlightsViewController.h"
 #import "PKRootViewController.h"
@@ -65,8 +65,8 @@
     NSArray *navViewControllers = [[NSArray alloc] initWithObjects:
                                     [[PKBibleBooksController alloc] init],
                                     [[PKHighlightsViewController alloc] init],
-                                    [[PKBookmarksViewController alloc] init],
-                                    [[PKNotesViewController alloc] init]
+                                    [[PKNotesViewController alloc] init],
+                                    [[PKHistoryViewController alloc] init]
                                     , nil];
                                     
     UINavigationController *segmentedNavBarController = 
@@ -84,7 +84,7 @@
                                              initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
 
     self.segmentedControl = [[UISegmentedControl alloc]
-                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Bookmarks", @"Notes", nil]];
+                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Notes", @"History", nil]];
     self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     [self.segmentedControl addTarget:self.segmentController 
                     action:@selector(indexDidChangeForSegmentedControl:) 
