@@ -12,6 +12,7 @@
 #import "PKNotesViewController.h"
 #import "PKHighlightsViewController.h"
 #import "PKRootViewController.h"
+#import "PKBibleViewController.h"
 
 @implementation PKAppDelegate
 
@@ -71,15 +72,20 @@
                                     
     UINavigationController *segmentedNavBarController = 
                             [[UINavigationController alloc] init ];
-    [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
     segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+
+    if ([segmentedNavBarController.navigationBar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)])
+    {
+    [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
     [segmentedNavBarController.navigationBar setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
         [UIColor whiteColor], UITextAttributeTextColor, nil]];
+    }
 
-
-    [[UIBarButtonItem appearance] setTintColor:    [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0]];
-
-
+    if ([[UIBarButtonItem class] respondsToSelector:@selector(setTintColor:)])
+    {
+        [[UIBarButtonItem appearance] setTintColor:    [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0]];
+    }
+    
     self.segmentController = [[SegmentsController alloc]
                                              initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
 
@@ -91,7 +97,10 @@
                     forControlEvents:UIControlEventValueChanged];
     
     self.segmentedControl.selectedSegmentIndex = 0;
-    self.segmentedControl.apportionsSegmentWidthsByContent = YES;
+    if ([self.segmentedControl respondsToSelector:@selector(setApportionsSegmentWidthsByContent:)])
+    {
+        self.segmentedControl.apportionsSegmentWidthsByContent = YES;
+    }
     self.segmentedControl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     CGRect scFrame = segmentedNavBarController.view.bounds;
@@ -100,8 +109,10 @@
     //scFrame.size.width = 260;
     self.segmentedControl.frame = scFrame;
     
-    self.segmentedControl.tintColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
-    
+    if ([self.segmentedControl respondsToSelector:@selector(setTintColor:)])
+    {
+        self.segmentedControl.tintColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
+    }
     [self.segmentController indexDidChangeForSegmentedControl:segmentedControl];
     
     // define our ZUII
@@ -136,6 +147,16 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // before going, get the top verse
+    ZUUIRevealController  *rc = (ZUUIRevealController *)self.rootViewController;
+    PKRootViewController *rvc = (PKRootViewController *)rc.frontViewController;
+        
+    PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex:0] viewControllers] objectAtIndex:0];     
+    
+    ((PKSettings *)[PKSettings instance]).topVerse = [[[bvc.tableView indexPathsForVisibleRows] objectAtIndex:0] row]+1;
+
+    // save our settings
     [[PKSettings instance ]saveSettings];
 }
 
