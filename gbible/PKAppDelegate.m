@@ -14,6 +14,38 @@
 #import "PKRootViewController.h"
 #import "PKBibleViewController.h"
 
+#import <QuartzCore/QuartzCore.h>
+
+/*
+@interface UINavigationBar (PKNavigationBarShadow)
+- (void)drawOurShadow;
+@end
+
+@implementation UINavigationBar (PKNavigationBarShadow)
+
+- (void)drawOurShadow
+{
+    self.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.layer.shadowOffset = CGSizeMake (0.0, 4);
+    self.layer.shadowOpacity = 0.5f;
+    self.layer.masksToBounds = NO;
+    CGRect shadowPath = CGRectMake(self.layer.bounds.origin.x - 10, 
+                                   self.layer.bounds.size.height - 6, 
+                                   1044, 5); // assume our widest -- we're a shadow, after all
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
+    self.layer.shouldRasterize = YES;
+}
+- (void)willMoveToWindow:(UIWindow *)newWindow
+{
+    [super willMoveToWindow:newWindow];
+    [self drawOurShadow];
+}
+
+
+@end
+*/
+
+
 @implementation PKAppDelegate
 
 @synthesize window = _window;
@@ -79,6 +111,9 @@
     UINavigationController *segmentedNavBarController = 
                             [[UINavigationController alloc] init ];
     segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+
+    segmentedNavBarController.view.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"Background.png"]];
+   
 
     if ([segmentedNavBarController.navigationBar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)])
     {
