@@ -107,7 +107,7 @@
                                     [[PKNotesViewController alloc] init],
                                     [[PKHistoryViewController alloc] init]
                                     , nil];
-                                    
+    
     UINavigationController *segmentedNavBarController = 
                             [[UINavigationController alloc] init ];
     segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -122,9 +122,10 @@
         [UIColor whiteColor], UITextAttributeTextColor, nil]];
     }
 
-    if ([[UIBarButtonItem class] respondsToSelector:@selector(setTintColor:)])
+    if ([[UIBarButtonItem class] respondsToSelector:@selector(appearance)])
     {
-        [[UIBarButtonItem appearance] setTintColor:    [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0]];
+        [[UIBarButtonItem appearance] setTintColor:    PKBaseUIColor];
+
     }
     
     self.segmentController = [[SegmentsController alloc]
@@ -152,7 +153,7 @@
     
     if ([self.segmentedControl respondsToSelector:@selector(setTintColor:)])
     {
-        self.segmentedControl.tintColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
+        self.segmentedControl.tintColor = PKBaseUIColor;
     }
     [self.segmentController indexDidChangeForSegmentedControl:segmentedControl];
     
@@ -163,7 +164,7 @@
     
     self.rootViewController = revealController;
     self.window.rootViewController = self.rootViewController;
-    self.window.backgroundColor = [UIColor colorWithRed:0.250980 green:0.282352 blue:0.313725 alpha:1.0];
+    self.window.backgroundColor = PKBaseUIColor;
     [self.window makeKeyAndVisible];
 
     [TestFlight passCheckpoint:@"APPLICATION_START"];
