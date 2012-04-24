@@ -125,6 +125,7 @@
     if ([[UIBarButtonItem class] respondsToSelector:@selector(appearance)])
     {
         [[UIBarButtonItem appearance] setTintColor:    PKBaseUIColor];
+        
 
     }
     
