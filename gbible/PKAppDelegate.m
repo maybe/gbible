@@ -84,10 +84,9 @@
     _instance = self;
     
     [TestFlight takeOff:@"f04cb885223a70de7f0bd87330878bc8_Njc1MTgyMDEyLTAzLTAyIDAzOjAzOjEzLjY4NTc0Mw"];
-    #define TESTING 1
-    #ifdef TESTING
-        [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
-    #endif
+//    #ifndef RELEASE
+//        [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
+//    #endif
         
     //open our databases...
     database = [PKDatabase instance];
