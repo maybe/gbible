@@ -111,13 +111,13 @@
                             [[UINavigationController alloc] init ];
     segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 
-    segmentedNavBarController.view.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"Background.png"]];
+    //segmentedNavBarController.view.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"Background.png"]];
    
 
     if ([segmentedNavBarController.navigationBar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)])
     {
-    [segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
-    [segmentedNavBarController.navigationBar setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
+        //[segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
+        [segmentedNavBarController.navigationBar setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
         [UIColor whiteColor], UITextAttributeTextColor, nil]];
     }
 
