@@ -13,6 +13,7 @@
 #import "PKHighlightsViewController.h"
 #import "PKRootViewController.h"
 #import "PKBibleViewController.h"
+#import "iOSHierarchyViewer.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -83,7 +84,8 @@
 {
     _instance = self;
     
-    [TestFlight takeOff:@"f04cb885223a70de7f0bd87330878bc8_Njc1MTgyMDEyLTAzLTAyIDAzOjAzOjEzLjY4NTc0Mw"];
+//    [TestFlight takeOff:@"f04cb885223a70de7f0bd87330878bc8_Njc1MTgyMDEyLTAzLTAyIDAzOjAzOjEzLjY4NTc0Mw"];
+    [TestFlight takeOff:@"4b66b818-4e6f-4d4e-ba76-e4a53e944f80"];
 //    #ifndef RELEASE
 //        [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 //    #endif
@@ -123,7 +125,7 @@
 
     if ([[UIBarButtonItem class] respondsToSelector:@selector(appearance)])
     {
-        [[UIBarButtonItem appearance] setTintColor:    PKBaseUIColor];
+        [[UIBarButtonItem appearance] setTintColor:    [PKSettings PKBaseUIColor]];
         
 
     }
@@ -153,7 +155,7 @@
     
     if ([self.segmentedControl respondsToSelector:@selector(setTintColor:)])
     {
-        self.segmentedControl.tintColor = PKBaseUIColor;
+        self.segmentedControl.tintColor = [PKSettings PKBaseUIColor];
     }
     [self.segmentController indexDidChangeForSegmentedControl:segmentedControl];
     
@@ -164,7 +166,7 @@
     
     self.rootViewController = revealController;
     self.window.rootViewController = self.rootViewController;
-    self.window.backgroundColor = PKBaseUIColor;
+    self.window.backgroundColor = [PKSettings PKBaseUIColor];
     [self.window makeKeyAndVisible];
 
     [TestFlight passCheckpoint:@"APPLICATION_START"];
@@ -196,10 +198,15 @@
     ZUUIRevealController  *rc = (ZUUIRevealController *)self.rootViewController;
     PKRootViewController *rvc = (PKRootViewController *)rc.frontViewController;
         
-    PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex:0] viewControllers] objectAtIndex:0];     
-    
-    ((PKSettings *)[PKSettings instance]).topVerse = [[[bvc.tableView indexPathsForVisibleRows] objectAtIndex:0] row]+1;
-
+    PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex:0] viewControllers] objectAtIndex:0];
+  
+    // attempt to fix issue #36
+    NSArray *indexPaths = [bvc.tableView indexPathsForVisibleRows];
+    if ([indexPaths count] > 0)
+    {
+        ((PKSettings *)[PKSettings instance]).topVerse = [[indexPaths objectAtIndex:0] row]+1;
+    }
+  
     // save our settings
     [[PKSettings instance ]saveSettings];
 }
@@ -222,7 +229,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
+ //[iOSHierarchyViewer start];
+ }
 
 /**
  *
