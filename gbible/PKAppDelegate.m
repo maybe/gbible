@@ -13,7 +13,8 @@
 #import "PKHighlightsViewController.h"
 #import "PKRootViewController.h"
 #import "PKBibleViewController.h"
-#import "iOSHierarchyViewer.h"
+//#import "iOSHierarchyViewer.h"
+#import "TestFlight.h"
 
 #import <QuartzCore/QuartzCore.h>
 
