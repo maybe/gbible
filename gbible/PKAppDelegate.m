@@ -14,6 +14,7 @@
 #import "PKRootViewController.h"
 #import "PKBibleViewController.h"
 //#import "iOSHierarchyViewer.h"
+#import "PKSettings.h"
 #import "TestFlight.h"
 
 #import <QuartzCore/QuartzCore.h>
@@ -86,7 +87,6 @@
     _instance = self;
     
 //    [TestFlight takeOff:@"f04cb885223a70de7f0bd87330878bc8_Njc1MTgyMDEyLTAzLTAyIDAzOjAzOjEzLjY4NTc0Mw"];
-    [TestFlight takeOff:@"4b66b818-4e6f-4d4e-ba76-e4a53e944f80"];
 //    #ifndef RELEASE
 //        [TestFlight setDeviceIdentifier:[[UIDevice currentDevice] uniqueIdentifier]];
 //    #endif
@@ -97,6 +97,11 @@
     //and get our settings
     mySettings = [PKSettings instance];
     [mySettings reloadSettings];
+
+  if ([mySettings usageStats] == YES)
+  {
+    [TestFlight takeOff:@"4b66b818-4e6f-4d4e-ba76-e4a53e944f80"];
+  }
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // define our "top-level" controller -- this is the one above the navigation panel 
