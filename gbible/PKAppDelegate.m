@@ -173,6 +173,69 @@
     self.rootViewController = revealController;
     self.window.rootViewController = self.rootViewController;
     self.window.backgroundColor = [PKSettings PKBaseUIColor];
+
+    
+    // Add imageView overlay with fade out and zoom in animation
+    // inspired by https://gist.github.com/1026439 and https://gist.github.com/3798781
+
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.window.frame];
+    
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+    {
+        switch ( [[UIApplication sharedApplication] statusBarOrientation] )
+        {
+        case UIInterfaceOrientationLandscapeLeft:
+        case UIInterfaceOrientationLandscapeRight:
+                if ( [UIScreen mainScreen].scale == 2 ) { imageView.image = [UIImage imageNamed:@"Default-Landscape@2x~ipad.png"]; }
+                                                   else { imageView.image = [UIImage imageNamed:@"Default-Landscape~ipad.png"]; }
+                [imageView setFrame: CGRectMake(0, 0, 1024, 748) ];
+            break;
+        case UIInterfaceOrientationPortrait:
+        case UIInterfaceOrientationPortraitUpsideDown:
+                if ( [UIScreen mainScreen].scale == 2 ) { imageView.image = [UIImage imageNamed:@"Default-Portrait@2x~ipad.png"]; }
+                                                   else { imageView.image = [UIImage imageNamed:@"Default-Portrait~ipad.png"]; }
+                [imageView setFrame: CGRectMake(0, 0, 768, 1004) ];
+            break;
+        }
+    }
+    else
+    {
+        // we're an iPhone or iPod touch. No rotation for you.
+        if ( [UIScreen mainScreen].scale == 2 )
+        {
+            // are we a 3.5in? or a 4?
+            if ([UIScreen mainScreen].bounds.size.height == 568.0f)
+            {
+                // 4 inch iPhone 5
+                imageView.image = [UIImage imageNamed:@"Default-568h@2x.png"];                
+                [imageView setFrame: CGRectMake(0, 0, 320, 548) ];
+            }
+            else
+            {
+                imageView.image = [UIImage imageNamed:@"Default@2x.png"];
+                [imageView setFrame: CGRectMake(0, 0, 320, 460) ];
+            }
+        }
+        else
+        {
+            imageView.image = [UIImage imageNamed:@"Default.png"];
+            [imageView setFrame: CGRectMake(0, 0, 320, 460) ];
+        }
+    }
+    [self.window.rootViewController.view addSubview:imageView];
+    [self.window.rootViewController.view bringSubviewToFront:imageView];
+
+    PKWaitDelay(2,{
+    [UIView transitionWithView:self.window
+                      duration:1.00f
+                       options:UIViewAnimationCurveEaseInOut
+                    animations:^(void){
+                        imageView.alpha = 0.0f;
+                    }
+                    completion:^(BOOL finished){
+                        [imageView removeFromSuperview];
+                    }];}
+           );
     [self.window makeKeyAndVisible];
 
     [TestFlight passCheckpoint:@"APPLICATION_START"];
