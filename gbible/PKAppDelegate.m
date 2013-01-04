@@ -16,6 +16,7 @@
 //#import "iOSHierarchyViewer.h"
 #import "PKSettings.h"
 #import "TestFlight.h"
+#import "NSString+FontAwesome.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -126,7 +127,9 @@
     {
         //[segmentedNavBarController.navigationBar setBackgroundImage:[UIImage imageNamed:@"BlueNavigationBar.png"] forBarMetrics:UIBarMetricsDefault];
         [segmentedNavBarController.navigationBar setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
-        [UIColor whiteColor], UITextAttributeTextColor, nil]];
+        [UIColor whiteColor], UITextAttributeTextColor,
+//        [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
+        nil]];
     }
 
     if ([[UIBarButtonItem class] respondsToSelector:@selector(appearance)])
@@ -139,8 +142,19 @@
     self.segmentController = [[SegmentsController alloc]
                                              initWithNavigationController:segmentedNavBarController viewControllers:navViewControllers];
 
+
     self.segmentedControl = [[UISegmentedControl alloc]
-                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Notes", @"History", nil]];
+//                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Notes", @"History", nil]];
+                                          initWithItems:[NSArray arrayWithObjects:
+                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
+                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-tint"],
+                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-briefcase"],
+                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"],
+                                                           nil]];
+        [[UISegmentedControl appearance] setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
+        [UIColor whiteColor], UITextAttributeTextColor,
+        [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
+        nil] forState:UIControlStateNormal ];
     self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     [self.segmentedControl addTarget:self.segmentController 
                     action:@selector(indexDidChangeForSegmentedControl:) 
