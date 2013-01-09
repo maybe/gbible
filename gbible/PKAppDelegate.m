@@ -144,7 +144,7 @@
 
 
     self.segmentedControl = [[UISegmentedControl alloc]
-//                                          initWithItems:[NSArray arrayWithObjects:@"Goto", @"Highlights", @"Notes", @"History", nil]];
+//                                          initWithItems:[NSArray arrayWithObjects:__T(@"Goto"), __T(@"Highlights"), __T(@"Notes"), __T(@"History"), nil]];
                                           initWithItems:[NSArray arrayWithObjects:
                                                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
                                                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-tint"],
