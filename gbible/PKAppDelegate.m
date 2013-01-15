@@ -136,8 +136,11 @@
     if ([[UIBarButtonItem class] respondsToSelector:@selector(appearance)])
     {
         [[UIBarButtonItem appearance] setTintColor:    [PKSettings PKBaseUIColor]];
-        
-
+    }
+  
+    if ([[UISearchBar class] respondsToSelector:@selector(appearance)])
+    {
+        [[UISearchBar appearance] setTintColor: [PKSettings PKBaseUIColor]];
     }
     
     self.segmentController = [[SegmentsController alloc]
@@ -145,17 +148,17 @@
 
 
     self.segmentedControl = [[UISegmentedControl alloc]
-//                                          initWithItems:[NSArray arrayWithObjects:__T(@"Goto"), __T(@"Highlights"), __T(@"Notes"), __T(@"History"), nil]];
-                                          initWithItems:[NSArray arrayWithObjects:
-                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
-                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-tint"],
-                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-briefcase"],
-                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"],
-                                                           nil]];
-        [[UISegmentedControl appearance] setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
-        [UIColor whiteColor], UITextAttributeTextColor,
-        [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
-        nil] forState:UIControlStateNormal ];
+                                          initWithItems:[NSArray arrayWithObjects:__T(@"Goto"), __T(@"Highlights"), __T(@"Notes"), __T(@"History"), nil]];
+//                                          initWithItems:[NSArray arrayWithObjects:
+//                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
+//                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-tint"],
+//                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-briefcase"],
+//                                                           [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"],
+//                                                           nil]];
+//        [[UISegmentedControl appearance] setTitleTextAttributes:[[NSDictionary alloc] initWithObjectsAndKeys:[UIColor blackColor], UITextAttributeTextShadowColor,
+//        [UIColor whiteColor], UITextAttributeTextColor,
+//        [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
+//        nil] forState:UIControlStateNormal ];
     self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     [self.segmentedControl addTarget:self.segmentController 
                     action:@selector(indexDidChangeForSegmentedControl:) 
