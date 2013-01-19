@@ -17,6 +17,7 @@
 #import "PKSettings.h"
 #import "TestFlight.h"
 #import "NSString+FontAwesome.h"
+#import "PSTCollectionView.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -75,7 +76,7 @@ static id _instance;
   
   // define an array that houses all our navigation panels.
   NSArray *navViewControllers         = [[NSArray alloc] initWithObjects:
-                                         [[PKBibleBooksController alloc] init],
+                                         [[PKBibleBooksController alloc] initWithCollectionViewLayout:[PSUICollectionViewFlowLayout new]],
                                          [[PKHighlightsViewController alloc] init],
                                          [[PKNotesViewController alloc] init],
                                          [[PKHistoryViewController alloc] init]
