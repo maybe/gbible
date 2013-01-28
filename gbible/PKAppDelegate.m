@@ -18,6 +18,7 @@
 #import "TestFlight.h"
 #import "NSString+FontAwesome.h"
 #import "PSTCollectionView.h"
+#import <Parse/Parse.h>
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -57,7 +58,12 @@ static id _instance;
 -(BOOL)application: (UIApplication *) application didFinishLaunchingWithOptions: (NSDictionary *) launchOptions
 {
   _instance = self;
-    
+  
+  // set up parse
+  [Parse setApplicationId:@"rOwVOFBI8HSnZK928jZ5jGfoE2F79GEvgHz0hVca"
+              clientKey:@"wY5I952RGaLpdZk8lvjsD712UXsCkUYysLO9Je0k"];
+  
+  
   //open our databases...
   database   = [PKDatabase instance];
   
