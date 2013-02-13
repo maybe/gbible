@@ -18,6 +18,7 @@
 #import "TestFlight.h"
 #import "NSString+FontAwesome.h"
 #import "PSTCollectionView.h"
+#import "iRate.h"
 #import <Parse/Parse.h>
 
 #import <QuartzCore/QuartzCore.h>
@@ -33,6 +34,11 @@
 @synthesize brightness;
 
 static id _instance;
+
++(void) initialize
+{
+  [iRate sharedInstance].promptAtLaunch = NO;
+}
 
 /**
  *
