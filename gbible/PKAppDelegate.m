@@ -316,6 +316,19 @@ static id _instance;
   // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously
   // in the background, optionally refresh the user interface.
   //[iOSHierarchyViewer start];
+
+  // before going, get the top verse
+  ZUUIRevealController  *rc  = (ZUUIRevealController *)self.rootViewController;
+  PKRootViewController *rvc  = (PKRootViewController *)rc.frontViewController;
+  
+  PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex: 0] viewControllers] objectAtIndex: 0];
+  if (rvc.selectedIndex == 0)
+  {
+    [bvc resignFirstResponder];
+    PKWaitDelay(0.5,
+    [bvc becomeFirstResponder];
+    );
+  }
 }
 
 /**
