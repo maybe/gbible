@@ -11,7 +11,7 @@
 #import "PKHistoryViewController.h"
 #import "PKNotesViewController.h"
 #import "PKHighlightsViewController.h"
-#import "PKRootViewController.h"
+//#import "PKRootViewController.h"
 #import "PKBibleViewController.h"
 //#import "iOSHierarchyViewer.h"
 #import "PKSettings.h"
@@ -29,6 +29,11 @@
 @synthesize database;
 @synthesize mySettings;
 @synthesize rootViewController;
+@synthesize bibleViewController;
+@synthesize bibleBooksViewController;
+@synthesize notesViewController;
+@synthesize historyViewController;
+@synthesize highlightsViewController;
 @synthesize segmentController;
 @synthesize segmentedControl;
 @synthesize brightness;
@@ -54,6 +59,121 @@ static id _instance;
     }
   }
   return _instance;
+}
+
++(PKAppDelegate *)sharedInstance
+{
+  return ((PKAppDelegate *)[self instance]);
+}
+
+-(void)applyProxyToView: (UIView *)theView
+{
+    NSLog (@"%@", [theView class]);
+    
+    // do we have subviews?
+    if ( theView.subviews.count > 0 )
+    {
+      for ( UIView *aView in theView.subviews )
+      {
+        [self applyProxyToView:aView];
+      }
+    }
+  
+  [theView setNeedsDisplay];
+  [theView setNeedsLayout];
+}
+
+-(void) applyThemeToUIBarButtonItem: (UIBarButtonItem *)b
+{
+  if (b.tag == 498)
+    return;
+  [b setTintColor: [PKSettings PKPageColor]];
+  [b setTitleTextAttributes:@{ UITextAttributeTextColor: [PKSettings PKTextColor],
+                               UITextAttributeTextShadowColor: [PKSettings PKLightShadowColor] }
+                   forState:UIControlStateNormal];
+}
+
+-(void) applyThemeToUINavigationBar: (UINavigationBar *)nba
+{
+    nba.barStyle = UIBarStyleBlackOpaque;
+    nba.tintColor = [PKSettings PKNavigationColor];
+    [nba setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    
+    nba.titleTextAttributes = @{ UITextAttributeTextColor: [PKSettings PKNavigationTextColor],
+                                 UITextAttributeTextShadowColor: [UIColor blackColor] };
+}
+
+-(void) applyThemeToUISearchBar: (UISearchBar *)sba
+{
+    sba.tintColor = [PKSettings PKNavigationColor];
+}
+
+-(void) applyThemeToUISegmentedControl: (UISegmentedControl *)sca
+{
+    sca.tintColor = [PKSettings PKNavigationColor];
+}
+
+-(void)updateAppearanceForTheme
+{
+  // update our proxies
+  if ([[UIBarButtonItem class] respondsToSelector: @selector(appearance)])
+    [self applyThemeToUIBarButtonItem:[UIBarButtonItem appearance]];
+  if ([[UINavigationBar class] respondsToSelector: @selector(appearance)])
+    [self applyThemeToUINavigationBar:[UINavigationBar appearance]];
+  if ([[UISearchBar class] respondsToSelector: @selector(appearance)])
+    [self applyThemeToUISearchBar:[UISearchBar appearance]];
+  if ([[UISegmentedControl class] respondsToSelector: @selector(appearance)])
+    [self applyThemeToUISegmentedControl:[UISegmentedControl appearance]];
+  
+  // and then update everything we possibly can that might be on screen
+  if ([[UIBarButtonItem class] respondsToSelector: @selector(appearance)])
+  {
+    
+    [self applyThemeToUISegmentedControl:segmentedControl];
+
+    NSMutableArray *va = [[NSMutableArray alloc] initWithArray:
+                            @[ bibleBooksViewController, notesViewController,
+                               highlightsViewController, historyViewController ] ];
+    if (bibleBooksViewController.navigationController.visibleViewController)
+      [va addObject:bibleBooksViewController.navigationController.visibleViewController];
+    if (bibleViewController.navigationController.visibleViewController)
+      [va addObject:bibleViewController.navigationController.visibleViewController];
+    for ( UIViewController * nb in va )
+    {
+      UINavigationItem * ni = nb.navigationItem;
+      if (ni.leftBarButtonItems)
+      {
+        for ( UIBarButtonItem* b in ni.leftBarButtonItems )
+        {
+          [self applyThemeToUIBarButtonItem:b];
+        }
+      }
+      if (ni.rightBarButtonItems)
+      {
+        for ( UIBarButtonItem* b in ni.rightBarButtonItems )
+        {
+          [self applyThemeToUIBarButtonItem:b];
+        }
+      }
+      if (ni.leftBarButtonItem)
+        [self applyThemeToUIBarButtonItem:ni.leftBarButtonItem];
+      if (ni.rightBarButtonItem)
+        [self applyThemeToUIBarButtonItem:ni.rightBarButtonItem];
+      if (ni.backBarButtonItem)
+        [self applyThemeToUIBarButtonItem:ni.backBarButtonItem];
+      if (nb.presentingViewController.navigationItem.backBarButtonItem)
+        [self applyThemeToUIBarButtonItem:nb.presentingViewController.navigationItem.backBarButtonItem];
+      //if (nb != bibleViewController)
+      //{
+        [self applyThemeToUINavigationBar:nb.navigationController.navigationBar];
+        if ([nb respondsToSelector:@selector(updateAppearanceForTheme)])
+        {
+          [nb performSelector:@selector(updateAppearanceForTheme)];
+        }
+      //}
+    }
+  }
+
 }
 
 /**
@@ -84,15 +204,14 @@ static id _instance;
   
   self.window = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
   // define our "top-level" controller -- this is the one above the navigation panel
-  PKRootViewController *topController = [[PKRootViewController alloc] init];
-  
+  bibleViewController = [[PKBibleViewController alloc] initWithStyle: UITableViewStylePlain];
   // define an array that houses all our navigation panels.
-  NSArray *navViewControllers         = [[NSArray alloc] initWithObjects:
-                                         [[PKBibleBooksController alloc] initWithCollectionViewLayout:[PSUICollectionViewFlowLayout new]],
-                                         [[PKHighlightsViewController alloc] init],
-                                         [[PKNotesViewController alloc] init],
-                                         [[PKHistoryViewController alloc] init]
-                                         , nil];
+  
+  bibleBooksViewController = [[PKBibleBooksController alloc] initWithCollectionViewLayout:[PSUICollectionViewFlowLayout new]];
+  highlightsViewController = [[PKHighlightsViewController alloc] init];
+  notesViewController = [[PKNotesViewController alloc] init];
+  historyViewController = [[PKHistoryViewController alloc] init];
+  NSArray *navViewControllers         = @[ bibleBooksViewController, highlightsViewController, notesViewController, historyViewController ];
   
   UINavigationController *segmentedNavBarController =
   [[UINavigationController alloc] init];
@@ -108,15 +227,8 @@ static id _instance;
                                                                       nil]];
   }
   
-  if ([[UIBarButtonItem class] respondsToSelector: @selector(appearance)])
-  {
-    [[UIBarButtonItem appearance] setTintColor:    [PKSettings PKBaseUIColor]];
-  }
-  
-  if ([[UISearchBar class] respondsToSelector: @selector(appearance)])
-  {
-    [[UISearchBar appearance] setTintColor: [PKSettings PKBaseUIColor]];
-  }
+  [self updateAppearanceForTheme];
+
   
   self.segmentController = [[SegmentsController alloc]
                             initWithNavigationController: segmentedNavBarController viewControllers: navViewControllers];
@@ -142,15 +254,12 @@ static id _instance;
   scFrame.size.height         = 34;
   self.segmentedControl.frame = scFrame;
   
-  if ([self.segmentedControl respondsToSelector: @selector(setTintColor:)])
-  {
-    self.segmentedControl.tintColor = [PKSettings PKBaseUIColor];
-  }
   [self.segmentController indexDidChangeForSegmentedControl: segmentedControl];
   
   // define our ZUII
+  UINavigationController *NC = [[UINavigationController alloc] initWithRootViewController:bibleViewController];
   ZUUIRevealController *revealController = [[ZUUIRevealController alloc]
-                                            initWithFrontViewController: topController
+                                            initWithFrontViewController: NC
                                             rearViewController: segmentedNavBarController];
   
   self.rootViewController        = revealController;
@@ -276,14 +385,8 @@ static id _instance;
   // and restore the brightness
   [[UIScreen mainScreen] setBrightness: brightness];
   
-  // before going, get the top verse
-  ZUUIRevealController  *rc  = (ZUUIRevealController *)self.rootViewController;
-  PKRootViewController *rvc  = (PKRootViewController *)rc.frontViewController;
-  
-  PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex: 0] viewControllers] objectAtIndex: 0];
-  
   // attempt to fix issue #36
-  NSArray *indexPaths        = [bvc.tableView indexPathsForVisibleRows];
+  NSArray *indexPaths        = [bibleViewController.tableView indexPathsForVisibleRows];
   
   if ([indexPaths count] > 0)
   {
@@ -317,18 +420,10 @@ static id _instance;
   // in the background, optionally refresh the user interface.
   //[iOSHierarchyViewer start];
 
-  // before going, get the top verse
-  ZUUIRevealController  *rc  = (ZUUIRevealController *)self.rootViewController;
-  PKRootViewController *rvc  = (PKRootViewController *)rc.frontViewController;
-  
-  PKBibleViewController *bvc = [[[rvc.viewControllers objectAtIndex: 0] viewControllers] objectAtIndex: 0];
-  if (rvc.selectedIndex == 0)
-  {
-    [bvc resignFirstResponder];
+    [bibleViewController resignFirstResponder];
     PKWaitDelay(0.5,
-    [bvc becomeFirstResponder];
+      [bibleViewController becomeFirstResponder];
     );
-  }
 }
 
 /**
