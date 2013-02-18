@@ -19,6 +19,8 @@
 #import "NSString+FontAwesome.h"
 #import "PSTCollectionView.h"
 #import "iRate.h"
+#import "PKSearchViewController.h"
+#import "PKStrongsController.h"
 #import <Parse/Parse.h>
 
 #import <QuartzCore/QuartzCore.h>
@@ -36,6 +38,8 @@
 @synthesize highlightsViewController;
 @synthesize segmentController;
 @synthesize segmentedControl;
+@synthesize searchViewController;
+@synthesize strongsViewController;
 @synthesize brightness;
 
 static id _instance;
@@ -68,72 +72,74 @@ static id _instance;
 
 -(void)applyProxyToView: (UIView *)theView
 {
-    NSLog (@"%@", [theView class]);
-    
-    // do we have subviews?
-    if ( theView.subviews.count > 0 )
+  NSLog (@"%@", [theView class]);
+  
+  // do we have subviews?
+  if ( theView.subviews.count > 0 )
+  {
+    for ( UIView *aView in theView.subviews )
     {
-      for ( UIView *aView in theView.subviews )
-      {
-        [self applyProxyToView:aView];
-      }
+      [self applyProxyToView:aView];
     }
+  }
   
   [theView setNeedsDisplay];
   [theView setNeedsLayout];
 }
 
--(void) applyThemeToUIBarButtonItem: (UIBarButtonItem *)b
++(void) applyThemeToUIBarButtonItem: (UIBarButtonItem *)b
 {
   if (b.tag == 498)
     return;
   [b setTintColor: [PKSettings PKPageColor]];
   [b setTitleTextAttributes:@{ UITextAttributeTextColor: [PKSettings PKTextColor],
-                               UITextAttributeTextShadowColor: [PKSettings PKLightShadowColor] }
+UITextAttributeTextShadowColor: [UIColor clearColor],
+UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
                    forState:UIControlStateNormal];
 }
 
--(void) applyThemeToUINavigationBar: (UINavigationBar *)nba
++(void) applyThemeToUINavigationBar: (UINavigationBar *)nba
 {
-    nba.barStyle = UIBarStyleBlackOpaque;
-    nba.tintColor = [PKSettings PKNavigationColor];
-    [nba setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    
-    nba.titleTextAttributes = @{ UITextAttributeTextColor: [PKSettings PKNavigationTextColor],
-                                 UITextAttributeTextShadowColor: [UIColor blackColor] };
+  nba.barStyle = UIBarStyleBlackOpaque;
+  nba.tintColor = [PKSettings PKNavigationColor];
+  [nba setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+  
+  nba.titleTextAttributes = @{ UITextAttributeTextColor: [PKSettings PKNavigationTextColor],
+                               UITextAttributeTextShadowColor: [UIColor blackColor] };
 }
 
--(void) applyThemeToUISearchBar: (UISearchBar *)sba
++(void) applyThemeToUISearchBar: (UISearchBar *)sba
 {
-    sba.tintColor = [PKSettings PKNavigationColor];
+  sba.tintColor = [PKSettings PKNavigationColor];
 }
 
--(void) applyThemeToUISegmentedControl: (UISegmentedControl *)sca
++(void) applyThemeToUISegmentedControl: (UISegmentedControl *)sca
 {
-    sca.tintColor = [PKSettings PKNavigationColor];
+  sca.tintColor = [PKSettings PKNavigationColor];
 }
 
 -(void)updateAppearanceForTheme
 {
   // update our proxies
   if ([[UIBarButtonItem class] respondsToSelector: @selector(appearance)])
-    [self applyThemeToUIBarButtonItem:[UIBarButtonItem appearance]];
+    [PKAppDelegate applyThemeToUIBarButtonItem:[UIBarButtonItem appearance]];
   if ([[UINavigationBar class] respondsToSelector: @selector(appearance)])
-    [self applyThemeToUINavigationBar:[UINavigationBar appearance]];
+    [PKAppDelegate applyThemeToUINavigationBar:[UINavigationBar appearance]];
   if ([[UISearchBar class] respondsToSelector: @selector(appearance)])
-    [self applyThemeToUISearchBar:[UISearchBar appearance]];
+    [PKAppDelegate applyThemeToUISearchBar:[UISearchBar appearance]];
   if ([[UISegmentedControl class] respondsToSelector: @selector(appearance)])
-    [self applyThemeToUISegmentedControl:[UISegmentedControl appearance]];
+    [PKAppDelegate applyThemeToUISegmentedControl:[UISegmentedControl appearance]];
   
   // and then update everything we possibly can that might be on screen
   if ([[UIBarButtonItem class] respondsToSelector: @selector(appearance)])
   {
     
-    [self applyThemeToUISegmentedControl:segmentedControl];
-
+    [PKAppDelegate applyThemeToUISegmentedControl:segmentedControl];
+    
     NSMutableArray *va = [[NSMutableArray alloc] initWithArray:
-                            @[ bibleBooksViewController, notesViewController,
-                               highlightsViewController, historyViewController ] ];
+                          @[ bibleBooksViewController, notesViewController,
+                          highlightsViewController, historyViewController,
+                          searchViewController, strongsViewController ] ];
     if (bibleBooksViewController.navigationController.visibleViewController)
       [va addObject:bibleBooksViewController.navigationController.visibleViewController];
     if (bibleViewController.navigationController.visibleViewController)
@@ -145,35 +151,35 @@ static id _instance;
       {
         for ( UIBarButtonItem* b in ni.leftBarButtonItems )
         {
-          [self applyThemeToUIBarButtonItem:b];
+          [PKAppDelegate applyThemeToUIBarButtonItem:b];
         }
       }
       if (ni.rightBarButtonItems)
       {
         for ( UIBarButtonItem* b in ni.rightBarButtonItems )
         {
-          [self applyThemeToUIBarButtonItem:b];
+          [PKAppDelegate applyThemeToUIBarButtonItem:b];
         }
       }
       if (ni.leftBarButtonItem)
-        [self applyThemeToUIBarButtonItem:ni.leftBarButtonItem];
+        [PKAppDelegate applyThemeToUIBarButtonItem:ni.leftBarButtonItem];
       if (ni.rightBarButtonItem)
-        [self applyThemeToUIBarButtonItem:ni.rightBarButtonItem];
+        [PKAppDelegate applyThemeToUIBarButtonItem:ni.rightBarButtonItem];
       if (ni.backBarButtonItem)
-        [self applyThemeToUIBarButtonItem:ni.backBarButtonItem];
+        [PKAppDelegate applyThemeToUIBarButtonItem:ni.backBarButtonItem];
       if (nb.presentingViewController.navigationItem.backBarButtonItem)
-        [self applyThemeToUIBarButtonItem:nb.presentingViewController.navigationItem.backBarButtonItem];
+        [PKAppDelegate applyThemeToUIBarButtonItem:nb.presentingViewController.navigationItem.backBarButtonItem];
       //if (nb != bibleViewController)
       //{
-        [self applyThemeToUINavigationBar:nb.navigationController.navigationBar];
-        if ([nb respondsToSelector:@selector(updateAppearanceForTheme)])
-        {
-          [nb performSelector:@selector(updateAppearanceForTheme)];
-        }
+      [PKAppDelegate applyThemeToUINavigationBar:nb.navigationController.navigationBar];
+      if ([nb respondsToSelector:@selector(updateAppearanceForTheme)])
+      {
+        [nb performSelector:@selector(updateAppearanceForTheme)];
+      }
       //}
     }
   }
-
+  
 }
 
 /**
@@ -187,7 +193,7 @@ static id _instance;
   
   // set up parse
   [Parse setApplicationId:@"rOwVOFBI8HSnZK928jZ5jGfoE2F79GEvgHz0hVca"
-              clientKey:@"wY5I952RGaLpdZk8lvjsD712UXsCkUYysLO9Je0k"];
+                clientKey:@"wY5I952RGaLpdZk8lvjsD712UXsCkUYysLO9Je0k"];
   
   
   //open our databases...
@@ -211,31 +217,46 @@ static id _instance;
   highlightsViewController = [[PKHighlightsViewController alloc] init];
   notesViewController = [[PKNotesViewController alloc] init];
   historyViewController = [[PKHistoryViewController alloc] init];
-  NSArray *navViewControllers         = @[ bibleBooksViewController, highlightsViewController, notesViewController, historyViewController ];
+  searchViewController = [[PKSearchViewController alloc] initWithStyle:UITableViewStylePlain];
+  strongsViewController = [[PKStrongsController alloc] initWithStyle:UITableViewStylePlain];
+  NSArray *navViewControllers         = @[ bibleBooksViewController, highlightsViewController,
+                                           notesViewController,
+                                           strongsViewController, searchViewController,
+                                           historyViewController
+                                           ];
   
   UINavigationController *segmentedNavBarController =
   [[UINavigationController alloc] init];
   segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-  
+/*
   if ([segmentedNavBarController.navigationBar respondsToSelector: @selector(setBackgroundImage:forBarMetrics:)])
   {
     [segmentedNavBarController.navigationBar setTitleTextAttributes: [[NSDictionary alloc] initWithObjectsAndKeys: [UIColor
                                                                                                                     blackColor],
                                                                       UITextAttributeTextShadowColor,
                                                                       [UIColor whiteColor], UITextAttributeTextColor,
-                                                                      //        [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
+                                                                              [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
                                                                       nil]];
   }
-  
+ */ 
   [self updateAppearanceForTheme];
-
+  
   
   self.segmentController = [[SegmentsController alloc]
                             initWithNavigationController: segmentedNavBarController viewControllers: navViewControllers];
   
+//  self.segmentedControl  = [[UISegmentedControl alloc]
+//                            initWithItems: @[ __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
+//                                            __T(@"History"), __T(@"Search"), __T(@"Strong's")]];
   self.segmentedControl  = [[UISegmentedControl alloc]
-                            initWithItems: [NSArray arrayWithObjects: __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
-                                            __T(@"History"), nil]];
+                            initWithItems: @[ [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
+                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-star"],
+                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-comment"],
+                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-magic"],
+                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-search"],
+                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"]
+                                              ]];
+  [self.segmentedControl setTitleTextAttributes:@{ UITextAttributeFont: [UIFont fontWithName:kFontAwesomeFamilyName size:20] } forState:UIControlStateNormal];
   self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
   [self.segmentedControl addTarget: self.segmentController
                             action: @selector(indexDidChangeForSegmentedControl:)
@@ -264,7 +285,7 @@ static id _instance;
   
   self.rootViewController        = revealController;
   self.window.rootViewController = self.rootViewController;
-  self.window.backgroundColor    = [PKSettings PKBaseUIColor];
+  self.window.backgroundColor    = [UIColor blackColor]; // [PKSettings PKBaseUIColor];
   
   // Add imageView overlay with fade out and zoom in animation
   // inspired by https://gist.github.com/1026439 and https://gist.github.com/3798781
@@ -419,11 +440,11 @@ static id _instance;
   // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously
   // in the background, optionally refresh the user interface.
   //[iOSHierarchyViewer start];
-
-    [bibleViewController resignFirstResponder];
-    PKWaitDelay(0.5,
-      [bibleViewController becomeFirstResponder];
-    );
+  
+  [bibleViewController resignFirstResponder];
+  PKWaitDelay(0.5,
+              [bibleViewController becomeFirstResponder];
+              );
 }
 
 /**
