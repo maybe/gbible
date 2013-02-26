@@ -93,7 +93,7 @@ static id _instance;
   if (b.tag == 498)
     return;
   [b setTintColor: [PKSettings PKPageColor]];
-  [b setTitleTextAttributes:@{ UITextAttributeTextColor: [PKSettings PKTextColor],
+  [b setTitleTextAttributes:@{ UITextAttributeTextColor: [PKSettings PKBarButtonTextColor],
 UITextAttributeTextShadowColor: [UIColor clearColor],
 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
                    forState:UIControlStateNormal];
