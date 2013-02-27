@@ -385,7 +385,7 @@ UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
   PKWaitDelay(2, {
         [UIView transitionWithView: self.window
                           duration: 1.00f
-                           options: UIViewAnimationCurveEaseInOut
+                           options: UIViewAnimationOptionCurveEaseInOut
                         animations:^(void) {
                           splash.alpha = 0.0f;
                         }
