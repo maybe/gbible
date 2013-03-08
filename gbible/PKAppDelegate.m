@@ -51,6 +51,7 @@
 #import "PKSearchViewController.h"
 #import "PKStrongsController.h"
 #import <Parse/Parse.h>
+#import "UIFont+Utility.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -117,15 +118,20 @@ static id _instance;
   [theView setNeedsLayout];
 }
 
+
 +(void) applyThemeToUIBarButtonItem: (UIBarButtonItem *)b
 {
   if (b.tag == 498)
     return;
   [b setTintColor: [PKSettings PKPageColor]];
-  [b setTitleTextAttributes:@{ UITextAttributeTextColor: [PKSettings PKBarButtonTextColor],
-UITextAttributeTextShadowColor: [UIColor clearColor],
-UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
+  [b setTitleTextAttributes:@{
+    UITextAttributeTextColor: [PKSettings PKBarButtonTextColor],
+    UITextAttributeTextShadowColor: [UIColor clearColor],
+    UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)],
+    UITextAttributeFont: [UIFont fontWithName:PKSettings.boldInterfaceFont size:13]
+    }
                    forState:UIControlStateNormal];
+
 }
 
 +(void) applyThemeToUINavigationBar: (UINavigationBar *)nba
@@ -135,7 +141,9 @@ UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
   [nba setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
   
   nba.titleTextAttributes = @{ UITextAttributeTextColor: [PKSettings PKNavigationTextColor],
-                               UITextAttributeTextShadowColor: [UIColor blackColor] };
+                               UITextAttributeTextShadowColor: [UIColor blackColor],
+    UITextAttributeFont: [UIFont fontWithName:PKSettings.boldInterfaceFont size:20]
+                               };
 }
 
 +(void) applyThemeToUISearchBar: (UISearchBar *)sba
@@ -258,34 +266,34 @@ UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
   UINavigationController *segmentedNavBarController =
   [[UINavigationController alloc] init];
   segmentedNavBarController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-/*
-  if ([segmentedNavBarController.navigationBar respondsToSelector: @selector(setBackgroundImage:forBarMetrics:)])
-  {
-    [segmentedNavBarController.navigationBar setTitleTextAttributes: [[NSDictionary alloc] initWithObjectsAndKeys: [UIColor
-                                                                                                                    blackColor],
-                                                                      UITextAttributeTextShadowColor,
-                                                                      [UIColor whiteColor], UITextAttributeTextColor,
-                                                                              [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
-                                                                      nil]];
-  }
- */ 
+  /*
+   if ([segmentedNavBarController.navigationBar respondsToSelector: @selector(setBackgroundImage:forBarMetrics:)])
+   {
+   [segmentedNavBarController.navigationBar setTitleTextAttributes: [[NSDictionary alloc] initWithObjectsAndKeys: [UIColor
+   blackColor],
+   UITextAttributeTextShadowColor,
+   [UIColor whiteColor], UITextAttributeTextColor,
+   [UIFont fontWithName:kFontAwesomeFamilyName size:20], UITextAttributeFont,
+   nil]];
+   }
+   */
   [self updateAppearanceForTheme];
   
   
   self.segmentController = [[SegmentsController alloc]
                             initWithNavigationController: segmentedNavBarController viewControllers: navViewControllers];
   
-//  self.segmentedControl  = [[UISegmentedControl alloc]
-//                            initWithItems: @[ __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
-//                                            __T(@"History"), __T(@"Search"), __T(@"Strong's")]];
+  //  self.segmentedControl  = [[UISegmentedControl alloc]
+  //                            initWithItems: @[ __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
+  //                                            __T(@"History"), __T(@"Search"), __T(@"Strong's")]];
   self.segmentedControl  = [[UISegmentedControl alloc]
                             initWithItems: @[ [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
-                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-star"],
-                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-comment"],
-                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-magic"],
-                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-search"],
-                                              [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"]
-                                              ]];
+                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-star"],
+                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-comment"],
+                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-magic"],
+                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-search"],
+                            [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"]
+                            ]];
   [self.segmentedControl setTitleTextAttributes:@{ UITextAttributeFont: [UIFont fontWithName:kFontAwesomeFamilyName size:20] } forState:UIControlStateNormal];
   self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
   [self.segmentedControl addTarget: self.segmentController
@@ -381,20 +389,20 @@ UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:  CGSizeMake(0,-1)] }
   
   [self.window.rootViewController.view addSubview: splash];
   [self.window.rootViewController.view bringSubviewToFront: splash];
-
+  
   PKWaitDelay(2, {
-        [UIView transitionWithView: self.window
-                          duration: 1.00f
-                           options: UIViewAnimationOptionCurveEaseInOut
-                        animations:^(void) {
-                          splash.alpha = 0.0f;
-                        }
-                        completion:^(BOOL finished) {
-                          [splash removeFromSuperview];
-                        }
-         ];
-    }
-  );
+    [UIView transitionWithView: self.window
+                      duration: 1.00f
+                       options: UIViewAnimationOptionCurveEaseInOut
+                    animations:^(void) {
+                      splash.alpha = 0.0f;
+                    }
+                    completion:^(BOOL finished) {
+                      [splash removeFromSuperview];
+                    }
+     ];
+  }
+              );
   
   [self.window makeKeyAndVisible];
   
