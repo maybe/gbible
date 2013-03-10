@@ -52,6 +52,7 @@
 #import "PKStrongsController.h"
 #import <Parse/Parse.h>
 #import "UIFont+Utility.h"
+#import "AccessibleSegmentedControl.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -286,7 +287,7 @@ static id _instance;
   //  self.segmentedControl  = [[UISegmentedControl alloc]
   //                            initWithItems: @[ __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
   //                                            __T(@"History"), __T(@"Search"), __T(@"Strong's")]];
-  self.segmentedControl  = [[UISegmentedControl alloc]
+  self.segmentedControl  = [[AccessibleSegmentedControl alloc]
                             initWithItems: @[ [NSString fontAwesomeIconStringForIconIdentifier:@"icon-book"],
                             [NSString fontAwesomeIconStringForIconIdentifier:@"icon-star"],
                             [NSString fontAwesomeIconStringForIconIdentifier:@"icon-comment"],
@@ -294,6 +295,8 @@ static id _instance;
                             [NSString fontAwesomeIconStringForIconIdentifier:@"icon-search"],
                             [NSString fontAwesomeIconStringForIconIdentifier:@"icon-time"]
                             ]];
+  self.segmentedControl.segmentAccessibilityLabels = @[ __T(@"Goto"), __T(@"Highlights"), __T(@"Notes"),
+                                                        __T(@"Strong's"), __T(@"Search"), __T(@"History")];
   [self.segmentedControl setTitleTextAttributes:@{ UITextAttributeFont: [UIFont fontWithName:kFontAwesomeFamilyName size:20] } forState:UIControlStateNormal];
   self.segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
   [self.segmentedControl addTarget: self.segmentController
